@@ -1,0 +1,24 @@
+---
+- name: Deploy QR Code Generator App
+  hosts: localhost
+  become: yes
+
+  tasks:
+    - name: Ensure Docker service is running
+      ansible.builtin.service:
+        name: docker
+        state: started
+        enabled: yes
+
+    - name: Build Docker image
+      command: docker build -t qr-code-generator .
+      args:
+        chdir: "{{ playbook_dir }}/.."
+
+    - name: Remove existing container (if any)
+      shell: docker rm -f qr-app || true
+      ignore_errors: yes
+
+    - name: Run Docker container
+      command: docker run -d -p 1111:1111 --name qr-app qr-code-generator
+      ignore_errors: true
