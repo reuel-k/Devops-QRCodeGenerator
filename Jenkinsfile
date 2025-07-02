@@ -22,14 +22,15 @@ pipeline {
         }
 
         stage('Run') {
-            steps {
-                sh 'docker rm -f qr-app || true'
-                sh 'docker network rm qr-monitoring || true'
-                sh 'docker network create qr-monitoring'
-                sh 'docker network connect qr-monitoring graphite || true'
-                sh 'docker run -d --name qr-app --network=qr-monitoring qr-code-generator'
-            }
-        }
+	    steps {
+		sh 'docker rm -f qr-app || true'
+		sh 'docker network rm qr-monitoring || true'
+		sh 'docker network create qr-monitoring'
+		sh 'docker network connect qr-monitoring graphite || true'
+		sh 'docker run -d -p 1111:1111 --name qr-app --network=qr-monitoring qr-code-generator'
+	    }
+	}
+
     }
 }
 
