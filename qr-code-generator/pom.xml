@@ -47,6 +47,12 @@
             <artifactId>javase</artifactId>
             <version>3.5.1</version>
         </dependency>
+
+        <dependency>
+            <groupId>io.micrometer</groupId>
+            <artifactId>micrometer-registry-graphite</artifactId>
+            <version>1.11.1</version> <!-- or compatible with Spring Boot 3.2 -->
+        </dependency>
     </dependencies>
 
     <build>
