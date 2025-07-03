@@ -5,8 +5,8 @@ import com.google.zxing.WriterException;
 import com.google.zxing.qrcode.QRCodeWriter;
 import com.google.zxing.common.BitMatrix;
 import com.google.zxing.client.j2se.MatrixToImageWriter;
-import com.google.zxing.client.j2se.MatrixToImageWriter;
-import com.google.zxing.common.BitMatrix;
+
+import io.micrometer.core.instrument.MeterRegistry; // ✅ import this
 
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -20,9 +20,24 @@ import javax.imageio.ImageIO;
 @Controller
 public class QrCodeController {
 
+    private final MeterRegistry registry; // ✅ declare registry
+
+    // ✅ constructor injection of MeterRegistry
+    public QrCodeController(MeterRegistry registry) {
+        this.registry = registry;
+    }
+
     @GetMapping("/")
     public String index() {
         return "index";
+    }
+
+    // ✅ Test metric endpoint
+    @GetMapping("/test-metric")
+    @ResponseBody
+    public String testMetric() {
+        registry.counter("qrgen.test.metric").increment();
+        return "✅ Metric incremented!";
     }
 
     @PostMapping("/generate")
@@ -46,3 +61,4 @@ public class QrCodeController {
         return "index";
     }
 }
+
