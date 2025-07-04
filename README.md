@@ -1,5 +1,5 @@
 # Devops-QRCodeGenerator
-<h2><u>Pre-requistes tools:</u></h2>
+<h2><u>Pre-requisite tools:</u></h2>
 <ul>
   <li>Docker</li>
   <li>Maven</li>
