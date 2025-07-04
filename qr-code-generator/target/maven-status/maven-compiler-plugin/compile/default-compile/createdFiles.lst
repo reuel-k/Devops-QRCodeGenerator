@@ -1,3 +1,4 @@
+com/devops/qr_code_generator/MetricPinger.class
 com/devops/qr_code_generator/QrCodeWebApplication.class
-com/devops/qr_code_generator/MetricsInit.class
+com/devops/qr_code_generator/MetricsConfig.class
 com/devops/qr_code_generator/QrCodeController.class

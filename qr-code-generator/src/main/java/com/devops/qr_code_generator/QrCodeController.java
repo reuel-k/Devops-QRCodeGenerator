@@ -1,12 +1,14 @@
 package com.devops.qr_code_generator;
 
+import com.codahale.metrics.MetricRegistry;
+import com.codahale.metrics.Counter;
+import com.codahale.metrics.Timer;
+
 import com.google.zxing.BarcodeFormat;
 import com.google.zxing.WriterException;
 import com.google.zxing.qrcode.QRCodeWriter;
 import com.google.zxing.common.BitMatrix;
 import com.google.zxing.client.j2se.MatrixToImageWriter;
-
-import io.micrometer.core.instrument.MeterRegistry; // ✅ import this
 
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -16,15 +18,33 @@ import org.springframework.web.bind.annotation.*;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayOutputStream;
 import javax.imageio.ImageIO;
+import jakarta.annotation.PostConstruct;
 
 @Controller
 public class QrCodeController {
 
-    private final MeterRegistry registry; // ✅ declare registry
+    private final MetricRegistry metricRegistry;
+    private Counter testMetricCounter;
+    private final Counter qrGenerationCounter;
+    private final Timer qrGenerationTimer;
 
-    // ✅ constructor injection of MeterRegistry
-    public QrCodeController(MeterRegistry registry) {
-        this.registry = registry;
+    public QrCodeController(MetricRegistry metricRegistry) {
+        this.metricRegistry = metricRegistry;
+        this.qrGenerationCounter = metricRegistry.counter("qrgen.qr.generated");
+        this.qrGenerationTimer = metricRegistry.timer("qrgen.qr.generation.time");
+    }
+
+    @PostConstruct
+    public void initMetrics() {
+        this.testMetricCounter = metricRegistry.counter("qrgen.test.metric");
+        System.out.println("✅ Dropwizard MetricRegistry initialized: " + metricRegistry.getClass().getName());
+    }
+
+    @GetMapping("/test-metric")
+    @ResponseBody
+    public String testMetric() {
+        testMetricCounter.inc();
+        return "✅ Dropwizard metric incremented!";
     }
 
     @GetMapping("/")
@@ -32,16 +52,9 @@ public class QrCodeController {
         return "index";
     }
 
-    // ✅ Test metric endpoint
-    @GetMapping("/test-metric")
-    @ResponseBody
-    public String testMetric() {
-        registry.counter("qrgen.test.metric").increment();
-        return "✅ Metric incremented!";
-    }
-
     @PostMapping("/generate")
     public String generateQR(@RequestParam("text") String text, Model model) {
+        final Timer.Context context = qrGenerationTimer.time(); // Start timer
         try {
             QRCodeWriter writer = new QRCodeWriter();
             BitMatrix matrix = writer.encode(text, BarcodeFormat.QR_CODE, 300, 300);
@@ -54,11 +67,17 @@ public class QrCodeController {
 
             model.addAttribute("qrImage", base64Image);
             model.addAttribute("inputText", text);
+
+            qrGenerationCounter.inc(); // ✅ Increment metric
+
         } catch (Exception e) {
             model.addAttribute("error", "Error generating QR Code: " + e.getMessage());
+        } finally {
+            context.stop(); // ✅ Stop timer
         }
 
         return "index";
     }
+
 }
 
