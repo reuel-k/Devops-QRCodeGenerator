@@ -1,6 +1,0 @@
-CONTAINER ID   IMAGE                         COMMAND                  CREATED      STATUS                    PORTS     NAMES
-463f931c5e1a   devops_filecompress:metrics   "java -jar /app.jar …"   3 days ago   Exited (0) 3 days ago               sleepy_goodall
-b231ae5dbaac   devops_filecompress:metrics   "java -jar /app.jar …"   3 days ago   Exited (0) 3 days ago               bold_grothendieck
-82b17614683c   devops_filecompress:metrics   "java -jar /app.jar …"   3 days ago   Exited (0) 3 days ago               goofy_albattani
-a6452f451fae   alpine                        "sh"                     3 days ago   Exited (130) 3 days ago             adoring_hawking
-441a26053125   devops_filecompress:metrics   "java -jar /app.jar …"   3 days ago   Exited (0) 3 days ago               zen_agnesi
