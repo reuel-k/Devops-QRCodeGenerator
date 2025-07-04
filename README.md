@@ -1,4 +1,5 @@
 # Devops-QRCodeGenerator
+Try it out: https://devops-qrcodegenerator.onrender.com
 <h2><u>Pre-requisite tools:</u></h2>
 <ul>
   <li>Docker</li>
